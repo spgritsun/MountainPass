@@ -22,8 +22,12 @@ class Coordinates(models.Model):
 
 
 class Image(models.Model):
-    data = models.ImageField(upload_to='images/')
-    title = models.CharField(max_length=100)
+    title1 = models.CharField(max_length=100, null=True, blank=True)
+    data1 = models.ImageField(upload_to='images/', null=True, blank=True)
+    title2 = models.CharField(max_length=100, null=True, blank=True)
+    data2 = models.ImageField(upload_to='images/', null=True, blank=True)
+    title3 = models.CharField(max_length=100, null=True, blank=True)
+    data3 = models.ImageField(upload_to='images/', null=True, blank=True)
 
 
 class Level(models.Model):
@@ -34,7 +38,7 @@ class Level(models.Model):
 
 
 class Status(models.Model):
-    status_name = models.CharField(default='new')
+    status_name = models.CharField(max_length=50, default='new')
 
 
 class Pass(models.Model):
@@ -47,4 +51,4 @@ class Pass(models.Model):
     coords = models.ForeignKey(Coordinates, on_delete=models.CASCADE)
     images = models.ForeignKey(Image, on_delete=models.CASCADE)
     levels = models.ForeignKey(Level, on_delete=models.CASCADE)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    statuses = models.ForeignKey(Status, on_delete=models.CASCADE)
