@@ -38,7 +38,7 @@ class Level(models.Model):
 
 
 class Status(models.Model):
-    status_name = models.CharField(max_length=50, default='new')
+    status_name = models.CharField(max_length=50)
 
 
 class Pass(models.Model):
