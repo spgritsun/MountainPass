@@ -1,6 +1,6 @@
 from rest_framework.relations import SlugRelatedField, StringRelatedField, PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
-from main.models import Pass, User
+from main.models import *
 
 
 class UserSerializer(ModelSerializer):
@@ -9,8 +9,36 @@ class UserSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class CoordSerializer(ModelSerializer):
+    class Meta:
+        model = Coordinates
+        fields = '__all__'
+
+
+class ImageSerializer(ModelSerializer):
+    class Meta:
+        model = Image
+        fields = '__all__'
+
+
+class LevelSerializer(ModelSerializer):
+    class Meta:
+        model = Level
+        fields = '__all__'
+
+
+class StatusSerializer(ModelSerializer):
+    class Meta:
+        model = Status
+        fields = '__all__'
+
+
 class PassSerializer(ModelSerializer):
     user = UserSerializer()
+    coords = CoordSerializer()
+    images = ImageSerializer()
+    levels = LevelSerializer()
+    statuses = StatusSerializer()
 
     class Meta:
         model = Pass
