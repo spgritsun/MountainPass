@@ -38,7 +38,18 @@ class Level(models.Model):
 
 
 class Status(models.Model):
-    status_name = models.CharField(max_length=50)
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
+    status_name = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='new',
+    )
 
 
 class Pass(models.Model):
