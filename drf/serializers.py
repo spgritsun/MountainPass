@@ -58,60 +58,6 @@ class PassSerializer(ModelSerializer):
                                             images=images_instance, statuses=statuses_instance, **validated_data)
         return pass_instance
 
-    # def create(self, validated_data):
-    #     try:
-    #         user_data = validated_data.pop('user')
-    #         coords_data = validated_data.pop('coords')
-    #         levels_data = validated_data.pop('levels')
-    #         images_data = validated_data.pop('images')
-    #         statuses_data = validated_data.pop('statuses')
-    #
-    #         # Отладка данных запроса
-    #         print("Validated data:")
-    #         print(validated_data)
-    #         print("User data:", user_data)
-    #         print("Coords data:", coords_data)
-    #         print("Levels data:", levels_data)
-    #         print("Images data:", images_data)
-    #         print("Statuses data:", statuses_data)
-    #
-    #         # Проверка существования пользователя с данным email
-    #         existing_user = User.objects.filter(email=user_data['email']).first()
-    #         print(existing_user)
-    #         if existing_user:
-    #             print(f"User with email {user_data['email']} already exists: {existing_user}")
-    #         else:
-    #             print(f"No existing user found with email {user_data['email']}")
-    #
-    #         # Получение или создание пользователя
-    #         user_instance, created = User.objects.get_or_create(email=user_data['email'], defaults=user_data)
-    #         if created:
-    #             print("Created new user:", user_instance)
-    #         else:
-    #             print("Found existing user:", user_instance)
-    #
-    #         # Получение или создание связанных объектов
-    #         coords_instance, _ = Coordinates.objects.get_or_create(**coords_data)
-    #         levels_instance, _ = Level.objects.get_or_create(**levels_data)
-    #         images_instance, _ = Image.objects.get_or_create(**images_data)
-    #         statuses_instance, _ = Status.objects.get_or_create(**statuses_data)
-    #
-    #         # Создание основного объекта Pass
-    #         pass_instance = Pass.objects.create(
-    #             user=user_instance,
-    #             coords=coords_instance,
-    #             levels=levels_instance,
-    #             images=images_instance,
-    #             statuses=statuses_instance,
-    #             **validated_data
-    #         )
-    #
-    #         return pass_instance
-    #
-    #     except Exception as e:
-    #         print(f"Error during creation process: {e}")
-    #         raise
-
     def update(self, instance, validated_data):
         try:
             if validated_data.get('statuses')['status_name'] == 'new':
@@ -124,11 +70,6 @@ class PassSerializer(ModelSerializer):
                 instance.save()
 
                 # Обновление связанных объектов
-                user_data = validated_data.get('user')
-                if user_data:
-                    user_serializer = self.fields['user']
-                    user_instance = instance.user
-                    user_serializer.update(user_instance, user_data)
 
                 coords_data = validated_data.get('coords')
                 if coords_data:
@@ -148,11 +89,9 @@ class PassSerializer(ModelSerializer):
                     levels_instance = instance.levels
                     levels_serializer.update(levels_instance, levels_data)
 
-                # Повторите этот процесс для остальных вложенных полей: levels, images, statuses
-
                 return instance
             else:
                 return instance
         except Exception as e:
-            # В случае возникновения ошибки возвращаем сообщение об ошибке
-            return f'Ошибка при обновлении записи: {str(e)}'
+            raise RuntimeError(f'Ошибка при обновлении записи: {str(e)}')
+
