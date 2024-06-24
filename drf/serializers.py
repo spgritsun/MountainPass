@@ -1,4 +1,3 @@
-from rest_framework.relations import SlugRelatedField, StringRelatedField, PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 from main.models import *
 
@@ -58,3 +57,48 @@ class PassSerializer(ModelSerializer):
         pass_instance = Pass.objects.create(user=user_instance, coords=coords_instance, levels=levels_instance,
                                             images=images_instance, statuses=statuses_instance, **validated_data)
         return pass_instance
+
+    def update(self, instance, validated_data):
+        try:
+            if validated_data.get('statuses')['status_name'] == 'new':
+                # Обновление основного объекта Pass
+                instance.beauty_title = validated_data.get('beauty_title', instance.beauty_title)
+                instance.title = validated_data.get('title', instance.title)
+                instance.other_titles = validated_data.get('other_titles', instance.other_titles)
+                instance.connect = validated_data.get('connect', instance.connect)
+                instance.add_time = validated_data.get('add_time', instance.add_time)
+                instance.save()
+
+                # Обновление связанных объектов
+                # user_data = validated_data.get('user')
+                # if user_data:
+                #     user_serializer = self.fields['user']
+                #     user_instance = instance.user
+                #     user_serializer.update(user_instance, user_data)
+
+                coords_data = validated_data.get('coords')
+                if coords_data:
+                    coords_serializer = self.fields['coords']
+                    coords_instance = instance.coords
+                    coords_serializer.update(coords_instance, coords_data)
+
+                images_data = validated_data.get('images')
+                if images_data:
+                    images_serializer = self.fields['images']
+                    images_instance = instance.images
+                    images_serializer.update(images_instance, images_data)
+
+                levels_data = validated_data.get('levels')
+                if levels_data:
+                    levels_serializer = self.fields['levels']
+                    levels_instance = instance.levels
+                    levels_serializer.update(levels_instance, levels_data)
+
+                # Повторите этот процесс для остальных вложенных полей: levels, images, statuses
+
+                return instance
+            else:
+                return instance
+        except Exception as e:
+            # В случае возникновения ошибки возвращаем сообщение об ошибке
+            return f'Ошибка при обновлении записи: {str(e)}'
